@@ -8,10 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from pytest_lazy_fixtures import lf
-
-pytest.lazy_fixture = lf
-
 
 try:
     from app.core.config import Settings
