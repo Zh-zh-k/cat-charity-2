@@ -6,6 +6,7 @@ from fastapi_users.authentication import (AuthenticationBackend,
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.constants import JWT_LIFETIME_SECONDS, MIN_PASSWORD_LENGTH
 from app.core.db import get_async_session
 from app.models.user import User
 
@@ -27,9 +28,12 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         password: str,
         user: User,
     ) -> None:
-        if len(password) < 3:
+        if len(password) < MIN_PASSWORD_LENGTH:
             raise exceptions.InvalidPasswordException(
-                reason='Password should be at least 3 characters'
+                reason=(
+                    'Password should be at least '
+                    f'{MIN_PASSWORD_LENGTH} characters'
+                )
             )
 
 
@@ -47,7 +51,7 @@ bearer_transport = BearerTransport(
 def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(
         secret=SECRET,
-        lifetime_seconds=3600,
+        lifetime_seconds=JWT_LIFETIME_SECONDS,
     )
 
 
